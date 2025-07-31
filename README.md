@@ -7,7 +7,7 @@ and [Gentoo-zh/linux-cjktty](https://github.com/Gentoo-zh/linux-cjktty) with min
 - To have a larger font on high resolution screens, you probably want to apply 32x32 font data patch.
 - The patch built-in fonts expect to work with 8x16 or 16x32 fonts. When changing to other font sizes, characters may not display correctly.
 
-## patches
+## Patches
 
 Required:
 
@@ -23,6 +23,12 @@ Optional:
 TODO:
 
 - `Nerdfont-font_cjk_16x16.h.patch.gz`
+
+## Issues
+
+1. How to generate `font_cjk_16x16.h` from TTF/Glyphs/Bitmap? (ref: ./font-headers/scripts)
+
+2. 各补丁文件的作用？(ref: ./original-intro)
 
 ## Changes
 
