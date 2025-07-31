@@ -2,7 +2,7 @@
 
 * patch
 * diffutils
-* patchutils
+* patchutils version 0.4.2
 * wget, gvim, delta
 
 # Split example patches
@@ -159,7 +159,52 @@ gzip 'font-headers/Nerdfont-enable-font_cjk_32x32.patch'
 
 * include + lib
 
+```
+mkdir v6.6/
+## patches todo
+patches=(
+    split-v6.6/include_linux_font.h.patch
+    split-v6.6/lib_fonts_Kconfig.patch
+    split-v6.6/lib_fonts_Makefile.patch
+    split-v6.6/lib_fonts_font_cjk_16x16.c.patch
+    #split-v6.6/lib_fonts_font_cjk_16x16.h.patch # w/o font header patches
+    split-v6.6/lib_fonts_font_cjk_32x32.c.patch
+    split-v6.6/lib_fonts_fonts.c.patch
+)
+
+## edit font_cjk_16x16.c.patch, font_cjk_32x32.c.patch
+grep -n '/font_cjk_16x16.h' split-v6.6/lib_fonts_font_cjk_16x16.c.patch # 31
+sed -i '31,33d' split-v6.6/lib_fonts_font_cjk_16x16.c.patch
+sed -i '1i diff --git a/lib/fonts/font_cjk_32x32.c b/lib/fonts/font_cjk_32x32.c\
+new file mode 100644\
+index 0000000..88ba3f2' split-v6.6/lib_fonts_font_cjk_32x32.c.patch
+
+## merge
+cat ${patches[@]} > v6.6/cjktty-include-lib.patch
+```
+
 * drivers
+
+```
+## patches todo
+patches_a=(
+    split-v6.6/drivers_tty_vt_selection.c.patch
+    split-v6.6/drivers_tty_vt_vt.c.patch
+)
+patches_b=(
+    split-v6.6/drivers_video_fbdev_core_bitblit.c.patch
+    split-v6.6/drivers_video_fbdev_core_fbcon.c.patch
+    split-v6.6/drivers_video_fbdev_core_fbcon.h.patch
+    split-v6.6/drivers_video_fbdev_core_fbcon_ccw.c.patch
+    split-v6.6/drivers_video_fbdev_core_fbcon_cw.c.patch
+    split-v6.6/drivers_video_fbdev_core_fbcon_rotate.c.patch
+    split-v6.6/drivers_video_fbdev_core_fbcon_ud.c.patch
+)
+
+## merge
+cat ${patches_a[@]} > v6.6/cjktty-drivers-tty.patch
+cat ${patches_b[@]} > v6.6/cjktty-drivers-video.patch
+```
 
 ## v6.12 (LTS)
 

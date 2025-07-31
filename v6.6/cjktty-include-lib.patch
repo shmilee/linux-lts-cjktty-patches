@@ -1,0 +1,163 @@
+diff --git a/include/linux/font.h b/include/linux/font.h
+index abf1442..9b19cae 100644
+--- a/include/linux/font.h
++++ b/include/linux/font.h
+@@ -35,6 +35,8 @@ struct font_desc {
+ #define FONT6x10_IDX	10
+ #define TER16x32_IDX	11
+ #define FONT6x8_IDX	12
++#define CJK16x16_IDX	13
++#define CJK32x32_IDX	14
+ 
+ extern const struct font_desc	font_vga_8x8,
+ 			font_vga_8x16,
+@@ -48,7 +50,9 @@ extern const struct font_desc	font_vga_8x8,
+ 			font_mini_4x6,
+ 			font_6x10,
+ 			font_ter_16x32,
+-			font_6x8;
++			font_6x8,
++			font_cjk_16x16,
++			font_cjk_32x32;
+ 
+ /* Find a font with a specific name */
+ 
+diff --git a/lib/fonts/Kconfig b/lib/fonts/Kconfig
+index c035fde..f6fd619 100644
+--- a/lib/fonts/Kconfig
++++ b/lib/fonts/Kconfig
+@@ -125,6 +125,26 @@ config FONT_6x8
+ 	help
+ 	  This font is useful for small displays (OLED).
+ 
++config FONT_CJK_16x16
++	bool "CJK 16x16 font" if FONTS
++	depends on FRAMEBUFFER_CONSOLE && VT_CONSOLE
++	select CONSOLE_TRANSLATIONS
++	default y if !SPARC
++	help
++	  This is a high resolution console font that covers Unicode Basic
++	  Multilingual Plane (BMP), mostly is CJK font. If you want basic Unicode
++	  support on the VT console, say Y.
++
++config FONT_CJK_32x32
++	bool "CJK 32x32 font" if FONTS
++	depends on FRAMEBUFFER_CONSOLE && VT_CONSOLE
++	select CONSOLE_TRANSLATIONS
++	default y if !SPARC
++	help
++	  This is a more higher resolution console font that covers Unicode Basic
++	  Multilingual Plane (BMP), mostly is CJK font. If you want basic Unicode
++	  support on the VT console for a high res monitor, say Y.
++
+ config FONT_AUTOSELECT
+ 	def_bool y
+ 	depends on !FONT_8x8
+@@ -139,6 +159,8 @@ config FONT_AUTOSELECT
+ 	depends on !FONT_10x18
+ 	depends on !FONT_TER16x32
+ 	depends on !FONT_6x8
++	depends on !FONT_CJK_16x16
++	depends on !FONT_CJK_32x32
+ 	select FONT_8x16
+ 
+ endif # FONT_SUPPORT
+diff --git a/lib/fonts/Makefile b/lib/fonts/Makefile
+index e16f684..3e1091d 100644
+--- a/lib/fonts/Makefile
++++ b/lib/fonts/Makefile
+@@ -16,6 +16,8 @@ font-objs-$(CONFIG_FONT_MINI_4x6)  += font_mini_4x6.o
+ font-objs-$(CONFIG_FONT_6x10)      += font_6x10.o
+ font-objs-$(CONFIG_FONT_TER16x32)  += font_ter16x32.o
+ font-objs-$(CONFIG_FONT_6x8)       += font_6x8.o
++font-objs-$(CONFIG_FONT_CJK_16x16) += font_cjk_16x16.o
++font-objs-$(CONFIG_FONT_CJK_32x32) += font_cjk_32x32.o
+ 
+ font-objs += $(font-objs-y)
+ 
+diff --git a/lib/fonts/font_cjk_16x16.c b/lib/fonts/font_cjk_16x16.c
+new file mode 100644
+index 0000000..a0c56bd
+--- /dev/null
++++ b/lib/fonts/font_cjk_16x16.c
+@@ -0,0 +1,27 @@
++// SPDX-License-Identifier: GPL-2.0
++/***************************************************************/
++/*                                                             */
++/* Font file modified from                                     */
++/* http://blog.chinaunix.net/u/13265/showart.php?id=1008020    */
++/* microcaicai@gmail modifiy it to use in-kernel font solution */
++/*                                                             */
++/***************************************************************/
++
++#include <linux/font.h>
++
++#define FONTDATAMAX (65536 * 32)
++
++static const struct font_data fontdata_cjk_16x16 = {
++	{ 0, 0, FONTDATAMAX, 0 }, {
++	#include "font_cjk_16x16.h"
++}};
++
++const struct font_desc font_cjk_16x16 = {
++	.idx	= CJK16x16_IDX,
++	.name	= "CJK16x16",
++	.width	= 8, /* make cursor appear 8 dot width */
++	.height	= 16,
++	.charcount	= 65536 * 2,
++	.data	= fontdata_cjk_16x16.data,
++	.pref	= 20, /* make it big enough to be chosen */
++};
+diff --git a/lib/fonts/font_cjk_32x32.c b/lib/fonts/font_cjk_32x32.c
+new file mode 100644
+index 0000000..88ba3f2
+--- /dev/null
++++ b/lib/fonts/font_cjk_32x32.c
+@@ -0,0 +1,27 @@
++// SPDX-License-Identifier: GPL-2.0
++/***************************************************************/
++/*                                                             */
++/* Font file modified from                                     */
++/* http://blog.chinaunix.net/u/13265/showart.php?id=1008020    */
++/* microcaicai@gmail modifiy it to use in-kernel font solution */
++/*                                                             */
++/***************************************************************/
++
++#include <linux/font.h>
++
++#define FONTDATAMAX (65536 * 128)
++
++static const struct font_data fontdata_cjk_32x32 = {
++	{ 0, 0, FONTDATAMAX, 0 }, {
++	#include "font_cjk_32x32.h"
++}};
++
++const struct font_desc font_cjk_32x32 = {
++	.idx	= CJK32x32_IDX,
++	.name	= "CJK32x32",
++	.width	= 16,
++	.height	= 32,
++	.charcount	= 65536 * 2,
++	.data	= fontdata_cjk_32x32.data,
++	.pref	= -1,
++};
+diff --git a/lib/fonts/font_cjk_32x32.h b/lib/fonts/font_cjk_32x32.h
+new file mode 100644
+index 0000000..e69de29
+diff --git a/lib/fonts/fonts.c b/lib/fonts/fonts.c
+index 9738664..16b414a 100644
+--- a/lib/fonts/fonts.c
++++ b/lib/fonts/fonts.c
+@@ -60,6 +60,12 @@ static const struct font_desc *fonts[] = {
+ #ifdef CONFIG_FONT_6x8
+ 	&font_6x8,
+ #endif
++#ifdef CONFIG_FONT_CJK_16x16
++	&font_cjk_16x16,
++#endif
++#ifdef CONFIG_FONT_CJK_32x32
++	&font_cjk_32x32,
++#endif
+ };
+ 
+ #define num_fonts ARRAY_SIZE(fonts)
