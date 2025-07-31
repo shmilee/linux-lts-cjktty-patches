@@ -120,7 +120,7 @@ diff -Nu split-v6.{6,9}/drivers_video_fbdev_core_fbcon_ud.c.patch
 mkdir font-headers/
 headersrc='Unifont-15.1/lib_fonts_font_cjk_16x16.h.patch'
 headerdst='font-headers/Unifont15.1-font_cjk_16x16.h.patch'
-grep -n '/font_cjk_32x32.c' $headersrc | awk -F: '{print $1}' # 196613
+grep -n '/font_cjk_32x32.c' $headersrc | awk -F: '{print $1}' # line 196613
 
 cat >$headerdst <<EOF
 diff --git a/lib/fonts/font_cjk_16x16.h b/lib/fonts/font_cjk_16x16.h
@@ -140,7 +140,7 @@ gzip 'font-headers/Unifont15.1-enable-font_cjk_32x32.patch'
 ```
 headersrc='Nerd-font/lib_fonts_font_cjk_16x16.h.patch'
 headerdst='font-headers/Nerdfont-font_cjk_16x16.h.patch'
-grep -n '/font_cjk_32x32.c' $headersrc | awk -F: '{print $1}' # 196613
+grep -n '/font_cjk_32x32.c' $headersrc | awk -F: '{print $1}' # line 196613
 
 cat >$headerdst <<EOF
 diff --git a/lib/fonts/font_cjk_16x16.h b/lib/fonts/font_cjk_16x16.h
@@ -173,7 +173,7 @@ patches=(
 )
 
 ## edit font_cjk_16x16.c.patch, font_cjk_32x32.c.patch
-grep -n '/font_cjk_16x16.h' split-v6.6/lib_fonts_font_cjk_16x16.c.patch # 31
+grep -n '/font_cjk_16x16.h' split-v6.6/lib_fonts_font_cjk_16x16.c.patch # line 31
 sed -i '31,33d' split-v6.6/lib_fonts_font_cjk_16x16.c.patch
 sed -i '1i diff --git a/lib/fonts/font_cjk_32x32.c b/lib/fonts/font_cjk_32x32.c\
 new file mode 100644\
@@ -204,6 +204,16 @@ patches_b=(
 ## merge
 cat ${patches_a[@]} > v6.6/cjktty-drivers-tty.patch
 cat ${patches_b[@]} > v6.6/cjktty-drivers-video.patch
+```
+
+Check patches:
+
+```
+zcat font-headers/Unifont15.1-font_cjk_16x16.h.patch.gz > /tmp/cjktty-v6.6-font_cjk_16x16.h.patch
+grep -n '/font_cjk_32x32.c' v6.6/cjktty-include-lib.patch # line 111
+sed '110r /tmp/cjktty-v6.6-font_cjk_16x16.h.patch' v6.6/cjktty-include-lib.patch > /tmp/cjktty-v6.6-include-lib.patch
+cat v6.6/cjktty-drivers-tty.patch v6.6/cjktty-drivers-video.patch  /tmp/cjktty-v6.6-include-lib.patch > /tmp/cjktty-v6.6-test.patch
+diff -Nu cjktty-6.6.patch /tmp/cjktty-v6.6-test.patch
 ```
 
 ## v6.12 (LTS)
