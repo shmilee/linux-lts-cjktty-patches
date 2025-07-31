@@ -11,9 +11,7 @@ and [Gentoo-zh/linux-cjktty](https://github.com/Gentoo-zh/linux-cjktty) with min
 
 Required:
 
-- `cjktty-drivers-tty.patch`
-- `cjktty-drivers-video.patch`
-- `cjktty-include-lib.patch`
+- `cjktty-6.y.z.patch`
 - `Unifont15.1-font_cjk_16x16.h.patch.gz`
 
 Optional:

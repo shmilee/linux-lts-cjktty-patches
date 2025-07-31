@@ -220,7 +220,7 @@ cat ${patches_a[@]} > v6.6/cjktty-drivers-tty.patch
 cat ${patches_b[@]} > v6.6/cjktty-drivers-video.patch
 ```
 
-Check patches:
+* check patches:
 
 ```
 zcat font-headers/Unifont15.1-font_cjk_16x16.h.patch.gz > /tmp/cjktty-v6.6-font_cjk_16x16.h.patch
@@ -228,6 +228,12 @@ grep -n '/font_cjk_32x32.c' v6.6/cjktty-include-lib.patch # line 111
 sed '110r /tmp/cjktty-v6.6-font_cjk_16x16.h.patch' v6.6/cjktty-include-lib.patch > /tmp/cjktty-v6.6-include-lib.patch
 cat v6.6/cjktty-drivers-tty.patch v6.6/cjktty-drivers-video.patch  /tmp/cjktty-v6.6-include-lib.patch > /tmp/cjktty-v6.6-test.patch
 diff -Nu cjktty-6.6.patch /tmp/cjktty-v6.6-test.patch
+```
+
+* merge
+
+```
+cat v6.6/{cjktty-drivers-tty.patch,cjktty-drivers-video.patch,cjktty-include-lib.patch} > ./cjktty-6.6.0.patch
 ```
 
 ## v6.12 (LTS)
@@ -281,7 +287,7 @@ cat ${patches_a[@]} > v6.12/cjktty-drivers-tty.patch
 cat ${patches_b[@]} > v6.12/cjktty-drivers-video.patch
 ```
 
-Check patches:
+* check patches:
 
 ```
 zcat font-headers/Unifont15.1-font_cjk_16x16.h.patch.gz > /tmp/cjktty-v6.12-font_cjk_16x16.h.patch
@@ -289,5 +295,11 @@ grep -n '/font_cjk_32x32.c' v6.12/cjktty-include-lib.patch # line 111
 sed '110r /tmp/cjktty-v6.12-font_cjk_16x16.h.patch' v6.12/cjktty-include-lib.patch > /tmp/cjktty-v6.12-include-lib.patch
 cat v6.12/cjktty-drivers-tty.patch v6.12/cjktty-drivers-video.patch  /tmp/cjktty-v6.12-include-lib.patch > /tmp/cjktty-v6.12-test.patch
 diff -Nu cjktty-6.9.patch /tmp/cjktty-v6.12-test.patch
+```
+
+* merge
+
+```
+cat v6.12/{cjktty-drivers-tty.patch,cjktty-drivers-video.patch,cjktty-include-lib.patch} > ./cjktty-6.12.0.patch
 ```
 
