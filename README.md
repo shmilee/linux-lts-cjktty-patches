@@ -7,11 +7,28 @@ and [Gentoo-zh/linux-cjktty](https://github.com/Gentoo-zh/linux-cjktty) with min
 - To have a larger font on high resolution screens, you probably want to apply 32x32 font data patch.
 - The patch built-in fonts expect to work with 8x16 or 16x32 fonts. When changing to other font sizes, characters may not display correctly.
 
+## patches
+
+Required:
+
+- `cjktty-drivers-tty.patch`
+- `cjktty-drivers-video.patch`
+- `cjktty-include-lib.patch`
+- `Unifont15.1-font_cjk_16x16.h.patch.gz`
+
+Optional:
+
+- `Unifont15.1-enable-font_cjk_32x32.patch.gz`
+
+TODO:
+
+- `Nerdfont-font_cjk_16x16.h.patch.gz`
+
 ## Changes
 
-### 2025.07.xx / 6.12
+### 2025.07.31 / 6.12
 
-- Resync for linux-6.12.y
+- Resync for linux-6.12.y (from 6.9)
 
 ### 2023.10.30 / 6.6 (upstream)
 
