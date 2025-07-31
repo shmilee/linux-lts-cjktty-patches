@@ -99,6 +99,19 @@ diff -Nur split-v6.6/ split-v6.8/ | delta -
 diff -Nu split-v6.{6,8}/drivers_tty_vt_vt.c.patch
 ```
 
+Hunk: ([for Nerd font?](https://github.com/zhmars/cjktty-patches/pull/19))
+```
+@@ -2762,5 +3215,7 @@ static int vc_con_write_normal(struct vc_data *vc, int tc, int c,
+
+	/* Now try to find out how to display it */
+-	tc = conv_uni_to_pc(vc, tc);
++	if ((tc < 0xf000) || (tc > 0xf0ff)) {
++		tc = conv_uni_to_pc(vc, tc);
++	}
+	if (tc & ~charmask) {
+		if (tc == -1 || tc == -2)
+```
+
 * v6.8 vs v6.9
 
 ```
