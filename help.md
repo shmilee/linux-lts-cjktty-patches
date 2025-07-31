@@ -33,6 +33,7 @@ splitdiff -D split-v6.8 -a -p1 cjktty-6.8.patch
 ## v6.9
 
 * 兼容反馈: https://github.com/bigshans/cjktty-patches/issues/1
+    - 6.9 的补丁可以应用到 6.12
 
 ```
 wget -c https://github.com/bigshans/cjktty-patches/raw/1e9bdcfe6b59efd1a45f456d0d57ca3beca13f51/v6.x/cjktty-6.9.patch
@@ -220,4 +221,60 @@ diff -Nu cjktty-6.6.patch /tmp/cjktty-v6.6-test.patch
 
 * include + lib
 
+```
+mkdir v6.12/
+## patches todo
+patches=(
+    split-v6.9/include_linux_font.h.patch
+    split-v6.9/lib_fonts_Kconfig.patch
+    split-v6.9/lib_fonts_Makefile.patch
+    split-v6.9/lib_fonts_font_cjk_16x16.c.patch
+    #split-v6.9/lib_fonts_font_cjk_16x16.h.patch # w/o font header patches
+    split-v6.9/lib_fonts_font_cjk_32x32.c.patch
+    split-v6.9/lib_fonts_fonts.c.patch
+)
+
+## edit font_cjk_16x16.c.patch, font_cjk_32x32.c.patch
+grep -n '/font_cjk_16x16.h' split-v6.9/lib_fonts_font_cjk_16x16.c.patch # line 31
+sed -i '31,33d' split-v6.9/lib_fonts_font_cjk_16x16.c.patch
+sed -i '1i diff --git a/lib/fonts/font_cjk_32x32.c b/lib/fonts/font_cjk_32x32.c\
+new file mode 100644\
+index 000000000..88ba3f278' split-v6.9/lib_fonts_font_cjk_32x32.c.patch
+
+## merge
+cat ${patches[@]} > v6.12/cjktty-include-lib.patch
+```
+
 * drivers
+
+```
+## patches todo
+patches_a=(
+    split-v6.9/drivers_tty_vt_selection.c.patch
+    split-v6.9/drivers_tty_vt_vt.c.patch
+)
+patches_b=(
+    split-v6.9/drivers_video_fbdev_core_bitblit.c.patch
+    split-v6.9/drivers_video_fbdev_core_fbcon.c.patch
+    split-v6.9/drivers_video_fbdev_core_fbcon.h.patch
+    split-v6.9/drivers_video_fbdev_core_fbcon_ccw.c.patch
+    split-v6.9/drivers_video_fbdev_core_fbcon_cw.c.patch
+    split-v6.9/drivers_video_fbdev_core_fbcon_rotate.c.patch
+    split-v6.9/drivers_video_fbdev_core_fbcon_ud.c.patch
+)
+
+## merge
+cat ${patches_a[@]} > v6.12/cjktty-drivers-tty.patch
+cat ${patches_b[@]} > v6.12/cjktty-drivers-video.patch
+```
+
+Check patches:
+
+```
+zcat font-headers/Unifont15.1-font_cjk_16x16.h.patch.gz > /tmp/cjktty-v6.12-font_cjk_16x16.h.patch
+grep -n '/font_cjk_32x32.c' v6.12/cjktty-include-lib.patch # line 111
+sed '110r /tmp/cjktty-v6.12-font_cjk_16x16.h.patch' v6.12/cjktty-include-lib.patch > /tmp/cjktty-v6.12-include-lib.patch
+cat v6.12/cjktty-drivers-tty.patch v6.12/cjktty-drivers-video.patch  /tmp/cjktty-v6.12-include-lib.patch > /tmp/cjktty-v6.12-test.patch
+diff -Nu cjktty-6.9.patch /tmp/cjktty-v6.12-test.patch
+```
+
