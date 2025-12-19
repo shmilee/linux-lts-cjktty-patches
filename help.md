@@ -303,3 +303,19 @@ diff -Nu cjktty-6.9.patch /tmp/cjktty-v6.12-test.patch
 cat v6.12/{cjktty-drivers-tty.patch,cjktty-drivers-video.patch,cjktty-include-lib.patch} > ./cjktty-6.12.0.patch
 ```
 
+### v6.12.58+ patch for drivers/video/fbdev/core/bitblit.c
+
+* 文件: `drivers/video/fbdev/core/bitblit.c`
+* commit logs:
+    - https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/log/drivers/video/fbdev/core/bitblit.c?h=v6.12.57
+    - https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/log/drivers/video/fbdev/core/bitblit.c?h=v6.12.58
+* 相关 commit:
+    - https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/drivers/video/fbdev/core/bitblit.c?h=v6.12.58&id=901f44227072be60812fe8083e83e1533c04eed1
+
+* update patche: `v6.12/cjktty-drivers-video-v6.12.58+.patch`
+
+```
+cat v6.12/{cjktty-drivers-tty.patch,cjktty-drivers-video-v6.12.58+.patch,cjktty-include-lib.patch} > ./cjktty-6.12.58+.patch
+diff -Nur cjktty-6.12.0.patch cjktty-6.12.58+.patch > ./cjktty-6.12.58+incremental.patch
+rm ./cjktty-6.12.58+.patch
+```
